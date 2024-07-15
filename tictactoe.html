@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tic Tac Toe</title>
+    <style>
+        *{
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        #wrapper{
+            min-height: 100vh;
+            max-width: 100vw;
+            overflow-x: hidden;
+            overflow-y: auto;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background: linear-gradient(90deg, #EE82EE 0%, #00D1FF 100%);
+        }
+        .section{
+            height: fit-content;
+            width: fit-content;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+            margin: 10px;
+            padding: 20px;
+            gap: 30px;
+        }
+        #game-info{
+            margin: 10px;
+            padding: 10px 40px;
+            height: max-content;
+            width: max-content;
+            text-align: center;
+            font-size: 1rem;
+            font-family: Verdana, Geneva, Tahoma, sans-serif;
+            color: white;
+            background-color: rgba(255, 255, 255, 0.3);
+            border: 2px solid white;
+            border-radius: 20px;
+        }
+        .game{
+            height: max-content;
+            width: fit-content;
+            margin: 10px;
+            padding: 20px;
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            grid-template-rows: repeat(3, 1fr);
+            border-radius: 10px;
+            background-color: rgba(255, 255, 255, 0.3);
+            box-shadow: 0px 0px 10px rgba(255, 255, 255, 0.3);
+            gap: 10px;
+        }
+        .box{
+            height: 100px;
+            width: 100px;
+            border: 1px solid white;
+            border-radius: 10px;
+            margin: auto;
+            padding: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 4rem;
+            font-family: Verdana, Geneva, Tahoma, sans-serif;
+            color: black;
+            background-color: transparent;
+            pointer-events: all;
+        }
+        .box:hover{
+            cursor: pointer;
+        }
+        .btn{
+            margin: 10px;
+            padding: 10px 40px;
+            height: max-content;
+            width: max-content;
+            font-size: 1rem;
+            color: white;
+            background-color: rgba(255, 255, 255, 0.3);
+            border: 2px solid white;
+            border-radius: 20px;
+        }
+        .btn:hover{
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+    <div id="wrapper">
+        <div class="section">
+            <p id="game-info">Current Player - X</p>
+            <div class="game">
+                <div class="box box1" onclick="handleClick(0)"></div>
+                <div class="box box2" onclick="handleClick(1)"></div>
+                <div class="box box3" onclick="handleClick(2)"></div>
+                <div class="box box4" onclick="handleClick(3)"></div>
+                <div class="box box5" onclick="handleClick(4)"></div>
+                <div class="box box6" onclick="handleClick(5)"></div>
+                <div class="box box7" onclick="handleClick(6)"></div>
+                <div class="box box8" onclick="handleClick(7)"></div>
+                <div class="box box9" onclick="handleClick(8)"></div>
+            </div>
+            <button class="btn" onclick="restart()">New Game</button>
+        </div>
+    </div>
+
+    <script>
+        let player = document.getElementById('game-info');
+        let boxes = document.getElementsByClassName('box');
+        
+        const winningPosition = [[0,1,2],[3,4,5],[6,7,8],[0,3,6],[1,4,7],[2,5,8],[0,4,8],[2,4,6]];
+        let currentPlayer = "X";
+        let gameGrid = ["","","","","","","","",""];
+
+        
+        function restart(){
+            player.textContent = "Current Player - X";
+            for(let i in boxes){
+                boxes[i].textContent="";
+                try{
+                    boxes[i].style.pointerEvents = "all";
+                    boxes[i].style.backgroundColor = "transparent";
+                }catch(err){}
+            }
+            currentPlayer = "X";
+            gameGrid = ["","","","","","","","",""];
+        }
+
+        function handleClick(index){
+            if(gameGrid[index] == ""){
+                gameGrid[index] = currentPlayer;
+                boxes[index].textContent = currentPlayer;
+                boxes[index].style.pointerEvents = "none";
+                if(checkWin()){ 
+                    for(let i in boxes){
+                        try{
+                            boxes[i].style.pointerEvents = "none";
+                        }catch(err){}
+                    }
+                    return true;
+                }
+                if(checkTie()) return true;
+                currentPlayer = (currentPlayer == "X")? "O" : "X";
+                player.textContent = `Current Player - ${currentPlayer}`;
+            }
+        }
+        function checkWin(){
+            for(let i in winningPosition){
+                let pos = winningPosition[i];
+                let a = gameGrid[pos[0]];
+                let b = gameGrid[pos[1]];
+                let c = gameGrid[pos[2]];
+                if(a == "" || b == "" || c == ""){
+                    continue;
+                }
+                if(a == b && b == c){
+                    boxes[pos[0]].style.backgroundColor = "aliceblue";
+                    boxes[pos[1]].style.backgroundColor = "aliceblue";
+                    boxes[pos[2]].style.backgroundColor = "aliceblue";
+                    player.textContent = `Player - ${currentPlayer} wins!`;
+                    return true;
+                }
+            }
+        }
+        function checkTie(){
+            let count = 0;
+            for(let i in gameGrid){
+                if(gameGrid[i] != ""){
+                    count++;
+                }
+            }
+            if(count == 9){
+                player.textContent = "Tie!";
+                return true;
+            }
+        }
+    </script>
+</body>
+</html>
